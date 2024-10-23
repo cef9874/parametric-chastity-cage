@@ -28,11 +28,11 @@ use <torus.scad>
 use <vec3math.scad>
 
 // Render cage and ring separately
-separateParts = 0; // [0: Together, 1: Separate]
+separateParts = 1; // [0: Together, 1: Separate]
 
 // Is the cage spiked or not ? 
-spiked = true;
-base_spiked = true;
+spiked = false;
+base_spiked = false;
 
 // Cage diameter
 cage_diameter=35; // [30:40]
@@ -68,7 +68,7 @@ slit_width=12; // [0:40]
 tilt=15; // [0:30]
 
 // If your lock fits too tightly in the casing, add some space around it here
-lock_margin = 0.1; // [0:0.01:1]
+lock_margin = 0.2; // [0:0.01:1]
 
 // If the two parts slide too stiffly, add some space here
 part_margin = 0.2; // [0:0.01:1]
@@ -128,7 +128,7 @@ cage_length = max(penis_length-gap, glans_cage_height+(R1+r1)*sin(tilt));
 // Vertical placement of lock hole
 lock_vertical = mount_height/2+1.5;
 // Horizontal placement of lock hole
-lock_lateral = 5.6;
+lock_lateral = 4.5;
 
 // P: bend point (assumed to be on the XZ plane)
 // dP: distance from origin to bend point
