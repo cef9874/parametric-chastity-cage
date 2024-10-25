@@ -1,6 +1,6 @@
 include <handyfunctions.scad>;
 
-module torus(R, r, phi=360, rounded=false, center=false) {
+module torus(R, r, phi=360, rounded=false, center=false, spiked=false) {
   offset = center ? -phi/2 : 0;
   if (version_num() > 20151231) {
     rz(offset) union() {
@@ -13,6 +13,11 @@ module torus(R, r, phi=360, rounded=false, center=false) {
       if (rounded) {
         dx(R) sphere(r);
         rz(phi) dx(R) sphere(r);
+      }
+    }
+    if(spiked) {
+        for(a = [15:30:phi-15]) {
+            rotate([0,0,a]) translate([R-r+2,0,0]) rotate([0,-90,0]) cylinder(4,max(r-1,2),1);
       }
     }
   } else {

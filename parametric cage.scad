@@ -30,6 +30,10 @@ use <vec3math.scad>
 // Render cage and ring separately
 separateParts = 0; // [0: Together, 1: Separate]
 
+// Is the cage spiked or not ? 
+spiked = true;
+base_spiked = true;
+
 // Cage diameter
 cage_diameter=35; // [30:40]
 
@@ -194,7 +198,7 @@ module rounded_cube(size, radius, center=false) {
 module cage() {
   cage_bar_segments(); // The bars
   glans_cap(); // The cap
-  torus(R1+r1, r3);  // Cage base ring
+  torus(R1+r1, r3, spiked=spiked);  // Cage base ring
   cage_lock(); // The part where the lock goes
 }
 
@@ -227,15 +231,15 @@ module glans_cap() {
   real_slit_width = max(min(slit_width, cage_diameter), 0.1);
   translate(R) ry(Phi+tilt) {
     // Ring around base of glans cap
-    torus(R1+r1, r1);
+    torus(R1+r1, r1, spiked=spiked);
     // Calculate the start and end points of the bars that create the front slit
     slitRadius = (R1+r1)*cos(asin(real_slit_width/2/(R1+r1)));
     slitStart = [slitRadius, -real_slit_width/2, 0];
     slitEnd = mx(slitStart);
     
     // Draw slit bars
-    dy(-real_slit_width/2) rx(90) torus(slitRadius, r1, 180);
-    dy(real_slit_width/2) rx(90) torus(slitRadius, r1, 180);
+    dy(-real_slit_width/2) rx(90) torus(slitRadius, r1, 180, spiked=spiked);
+    dy(real_slit_width/2) rx(90) torus(slitRadius, r1, 180, spiked=spiked);
     
     // Draw each cage bar (minus the part that would enter the slit area)
     for (theta = [step/2:step:180-step/2]) {
@@ -244,8 +248,8 @@ module glans_cap() {
         // Compute arc length of this side bar
         distanceInSlit = (real_slit_width/2)/sin(theta);
         arcLength = acos(distanceInSlit/(R1+r1));
-        rz(theta) rx(90) torus(R1+r1, r1, arcLength);
-        rz(180+theta) rx(90) torus(R1+r1, r1, arcLength);
+        rz(theta) rx(90) torus(R1+r1, r1, arcLength, spiked=spiked);
+        rz(180+theta) rx(90) torus(R1+r1, r1, arcLength, spiked=spiked);
       }
     }
   }
@@ -336,26 +340,26 @@ module base_ring() {
   if (wavyBase) {
     dz(-gap) dx(R2+r2-R1-r1-gap*tan(tilt)) wavy_torus(R2+r2, r2, waveAngle);
   } else {
-    dz(-gap) dx(R2+r2-R1-r1-gap*tan(tilt)) torus(R2+r2, r2);
+    dz(-gap) dx(R2+r2-R1-r1-gap*tan(tilt)) torus(R2+r2, r2, spiked=base_spiked);
   }
 }
 
 module wavy_torus(R, r, pitch) {
   union() {
     translate([-sin(-45)*R*(1-cos(pitch)), 0, -R*sin(-45)*sin(pitch)]) ry(pitch) rz(-45) {
-      torus(R, r, 90);
+      torus(R, r, 90, spiked=base_spiked);
       dx(R) sphere(r);
     }
     translate([0, sin(45)*R*(1-cos(pitch)), -R*sin(45)*sin(pitch)]) rx(pitch) rz(45) {
-      torus(R, r, 90);
+      torus(R, r, 90, spiked=base_spiked);
       dx(R) sphere(r);
     }
     translate([-sin(135)*R*(1-cos(pitch)), 0, -R*sin(135)*sin(-pitch)]) ry(-pitch) rz(135) {
-      torus(R, r, 90);
+      torus(R, r, 90, spiked=base_spiked);
       dx(R) sphere(r);
     }
     translate([0, sin(-135)*R*(1-cos(pitch)), -R*sin(-135)*sin(-pitch)]) rx(-pitch) rz(-135) {
-      torus(R, r, 90);
+      torus(R, r, 90, spiked=base_spiked);
       dx(R) sphere(r);
     }
   }
